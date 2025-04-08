@@ -325,18 +325,16 @@ class SubtitleSyncer:
             self.load_resume_point()
 
     def load_resume_point(self):
-        # Load the last synced subtitle and play time from the synced file
+        # Load the last synced subtitle and play time from the progress file
         try:
-            with open(self.synced_path, 'r', encoding='utf-8') as f:
-                lines = f.readlines()
-                for i, line in enumerate(lines):
-                    if '-->' in line:
-                        self.resume_point = i // 4  # Each subtitle block has 4 lines
-                        break
-            self.current_sub = self.resume_point
-            if self.current_sub < len(self.subs):
-                self.vlc_player.set_time(self.subs[self.current_sub]['start'])
-                self.load_next_subtitle()
+            progress_file = self.synced_path + '.progress'
+            if os.path.exists(progress_file):
+                with open(progress_file, 'r', encoding='utf-8') as f:
+                    self.current_sub = int(f.read().strip())
+
+                if self.current_sub < len(self.subs):
+                    self.vlc_player.set_time(self.subs[self.current_sub]['start'])
+                    self.load_next_subtitle()
         except Exception as e:
             print(f"Error loading resume point: {e}")
 
