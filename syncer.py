@@ -282,8 +282,15 @@ class SubtitleSyncer:
         if self.current_sub < len(self.subs):
             sub = self.subs[self.current_sub]
             self.sub_text.set(sub['text'])
-            self.vlc_player.set_time(sub['start'])  # Updated to use VLC
+            self.vlc_player.set_time(sub['start'])  # Set playback time to the start of the current subtitle
             self.update_status()
+
+        # Increment the current subtitle index to allow smooth navigation
+        self.current_sub += 1
+
+        # If the user reaches the end, display a message
+        if self.current_sub >= len(self.subs):
+            self.sub_text.set("All subtitles reviewed!")
 
     # Synchronize the current subtitle with the video
     def sync_current(self):
