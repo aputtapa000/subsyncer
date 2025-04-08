@@ -1,14 +1,16 @@
 # Subtitle Synchronizer Documentation
 
 ## Overview
-The Subtitle Synchronizer is a Python-based GUI application designed to help users synchronize subtitle files (.srt) with video files. It provides an intuitive interface for adjusting subtitle timings while previewing the video.
+The Subtitle Synchronizer is a Python-based GUI application designed to help users synchronize subtitle files (.srt) with video files. It provides an intuitive interface for adjusting subtitle timings while previewing the video. 100% written by AI (using 4o and Perplexity AI)
 
 ## Features
 - Load video and subtitle files.
 - Synchronize subtitles with video playback.
 - Save synchronized subtitles to a new file.
 - Resume progress from the last session.
+    - WIP
 - Keyboard shortcuts for quick navigation and synchronization.
+    - This could also be better.
 
 ## Requirements
 - Python 3.6 or higher.
