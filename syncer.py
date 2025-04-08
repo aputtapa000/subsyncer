@@ -256,8 +256,10 @@ class SubtitleSyncer:
         self.vlc_player.play()
 
     def pause_video(self):
-        self.is_paused = True
-        self.vlc_player.pause()
+        # Ensure the pause button only pauses when playback is ongoing
+        if not self.is_paused:
+            self.is_paused = True
+            self.vlc_player.pause()
 
     def jump_time(self, ms):
         current_time = self.vlc_player.get_time()
