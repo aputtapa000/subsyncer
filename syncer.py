@@ -65,10 +65,11 @@ class SubtitleSyncer:
         return video_path, srt_path
 
     # Parse the subtitle file into a structured format
-    def parse_srt(self):
+    def parse_srt(self, path=None):
         subs = []
         try:
-            with open(self.srt_path, 'r', encoding='utf-8') as f:
+            srt_path = path if path else self.srt_path
+            with open(srt_path, 'r', encoding='utf-8') as f:
                 lines = f.read().split('\n\n')
                 for block in lines:
                     parts = block.strip().split('\n')
@@ -87,6 +88,10 @@ class SubtitleSyncer:
     # Convert time string to milliseconds
     def time_to_ms(self, time_str):
         try:
+            # Ensure the time string has the correct format
+            if ',' not in time_str or len(time_str.split(':')) != 3:
+                raise ValueError(f"Invalid time format: {time_str}")
+
             h, m, s = time_str.split(':')
             s, ms = s.split(',')
             return int(timedelta(
@@ -95,13 +100,19 @@ class SubtitleSyncer:
                 seconds=int(s),
                 milliseconds=int(ms)
             ).total_seconds() * 1000)
-        except ValueError:
-            print(f"Error parsing time string: {time_str}")
+        except ValueError as e:
+            print(f"Error parsing time string: {time_str}. Ensure it follows the format hh:mm:ss,ms")
             sys.exit(1)
 
     # Convert milliseconds to time string
     def ms_to_time(self, ms):
-        return str(timedelta(milliseconds=ms))[:-3].replace('.', ',')
+        # Convert milliseconds to hh:mm:ss,ms format
+        total_seconds = ms // 1000
+        milliseconds = ms % 1000
+        hours = total_seconds // 3600
+        minutes = (total_seconds % 3600) // 60
+        seconds = total_seconds % 60
+        return f"{hours:02}:{minutes:02}:{seconds:02},{milliseconds:03}"
 
     # Update the GUI to display video frames
     def update_video_frame(self):
@@ -135,12 +146,14 @@ class SubtitleSyncer:
 
         # Display subtitle text
         self.sub_text = tk.StringVar()
-        self.sub_label = ttk.Label(
+        # Set a fixed height for the subtitle label to prevent layout shifts
+        self.sub_label = tk.Label(
             self.control_frame, 
             textvariable=self.sub_text,
             wraplength=300,
             font=('Arial', 14),
-            padding=10
+            anchor='center',
+            height=5  # Fixed height to prevent movement
         )
         self.sub_label.pack(pady=20)
 
@@ -278,15 +291,19 @@ class SubtitleSyncer:
             return
 
         current_time = self.vlc_player.get_time()
-        self.subs[self.current_sub]['start'] = current_time
+        sub = self.subs[self.current_sub]
 
-        if self.current_sub > 0:
-            self.subs[self.current_sub - 1]['end'] = current_time
+        # Calculate the shift amount based on the new start time
+        shift_amount = current_time - sub['start']
+
+        # Shift both start and end times by the same amount
+        sub['start'] += shift_amount
+        sub['end'] += shift_amount
 
         self.current_sub += 1
         if self.current_sub < len(self.subs):
-            sub = self.subs[self.current_sub]
-            self.sub_text.set(sub['text'])  # Prime the next subtitle without jumping
+            next_sub = self.subs[self.current_sub]
+            self.sub_text.set(next_sub['text'])  # Prime the next subtitle without jumping
         else:
             self.sub_text.set("All subtitles synchronized!")
 
@@ -322,6 +339,7 @@ class SubtitleSyncer:
         # Ask the user if they want to resume from the last save point
         resume = tk.messagebox.askyesno("Resume", "A synced file was found. Do you want to resume where you left off?")
         if resume:
+            self.subs = self.parse_srt(self.synced_path)  # Load synced subtitles
             self.load_resume_point()
 
     def load_resume_point(self):
