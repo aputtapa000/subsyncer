@@ -66,7 +66,7 @@ The Subtitle Synchronizer is a Python-based GUI application designed to help use
 - `]` : Jump forward 5 seconds.
 
 ## Testing
-The program creates a `*_synced.srt` file so as to not mess with the original srt file. To test playback you should select the synced srt file either through your video player or by renaming or making a copy of your video file to match the subtitle file's title.
+The program creates a `*_synced.srt` file so as to not mess with the original srt file. To test playback, you should select the synced srt file either through your video player or by renaming or making a copy of your video file to match the subtitle file's title.
 
 ## Limitations
 - The application currently supports only `.srt` subtitle files.
