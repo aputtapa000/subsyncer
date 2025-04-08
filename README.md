@@ -76,4 +76,5 @@ The Subtitle Synchronizer is a Python-based GUI application designed to help use
 - Support for additional subtitle formats.
 - Enhanced error handling and user feedback.
 - Improved GUI scaling for different screen resolutions.
-- Resum/progress system is finicky. WIP.
+- Resume/progress system is finicky. WIP.
+- Making keyboard shortcuts more robust.
