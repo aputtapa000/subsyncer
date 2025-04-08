@@ -70,7 +70,7 @@ The program creates a `*_synced.srt` file so as to not mess with the original sr
 
 ## Limitations
 - The application currently supports only `.srt` subtitle files.
-- The application currently supports `.mkv`,`.mp4`,`.avi` video file formats. There is no limitation to the length of the video files, however.
+- The application currently supports `.mkv`,`.mp4`, and `.avi` video file formats. There is no limitation to the length of the video files, however.
 - Requires VLC media player to be installed and properly configured.
 - The GUI may not scale well on very high-resolution displays.
 - Limited error handling for corrupted subtitle files.
