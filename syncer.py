@@ -140,20 +140,47 @@ class SubtitleSyncer:
         self.video_label = tk.Label(self.video_frame)
         self.video_label.pack(fill=tk.BOTH, expand=True)
 
+        # Create collapsible subtitle list frame
+        self.sidebar_frame = ttk.Frame(self.master, width=200)
+        self.sidebar_frame.grid(row=0, column=2, sticky="nsew")
+        self.sidebar_frame.grid_propagate(False)
+
+        # Add a scrollbar and listbox for subtitles
+        self.scrollbar = ttk.Scrollbar(self.sidebar_frame, orient=tk.VERTICAL)
+        self.subtitle_list = tk.Listbox(self.sidebar_frame, yscrollcommand=self.scrollbar.set, selectmode=tk.SINGLE)
+        self.scrollbar.config(command=self.subtitle_list.yview)
+
+        self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        self.subtitle_list.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        # Populate the subtitle list
+        for i, sub in enumerate(self.subs):
+            self.subtitle_list.insert(tk.END, f"{self.ms_to_time(sub['start'])} - {sub['text'].splitlines()[0]}")
+
+        # Bind double-click event to seek video
+        self.subtitle_list.bind("<Double-1>", self.on_subtitle_select)
+
+        # Add collapse/expand button
+        self.collapse_button = ttk.Button(self.master, text="▶", command=self.toggle_sidebar)
+        self.collapse_button.grid(row=1, column=2, sticky="e")
+
+        # Hide the sidebar by default
+        self.sidebar_visible = False
+        self.sidebar_frame.grid_remove()
+
         # Create control panel
         self.control_frame = ttk.Frame(self.master)
         self.control_frame.grid(row=0, column=1, sticky="nsew", padx=10, pady=10)
 
         # Display subtitle text
         self.sub_text = tk.StringVar()
-        # Set a fixed height for the subtitle label to prevent layout shifts
         self.sub_label = tk.Label(
             self.control_frame, 
             textvariable=self.sub_text,
             wraplength=300,
             font=('Arial', 14),
             anchor='center',
-            height=5  # Fixed height to prevent movement
+            height=5
         )
         self.sub_label.pack(pady=20)
 
@@ -238,6 +265,30 @@ class SubtitleSyncer:
         # Ensure VLC player is set up before GUI updates
         self.setup_vlc_player()
         self.update_video_frame()
+
+    def toggle_sidebar(self):
+        if self.sidebar_visible:
+            self.sidebar_frame.grid_remove()
+            self.collapse_button.config(text="▶")
+        else:
+            self.sidebar_frame.grid()
+            self.collapse_button.config(text="◀")
+        self.sidebar_visible = not self.sidebar_visible
+
+    def on_subtitle_select(self, event):
+        selection = self.subtitle_list.curselection()
+        if selection:
+            index = selection[0]
+            self.current_sub = index  # Update the current subtitle index
+
+            # Update the subtitle text and status
+            selected_sub = self.subs[self.current_sub]
+            self.sub_text.set(selected_sub['text'])
+            self.update_status()
+
+            # Seek the video to the selected timestamp
+            timestamp = selected_sub['start']
+            self.vlc_player.set_time(timestamp)
 
     def setup_vlc_player(self):
         try:

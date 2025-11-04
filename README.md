@@ -83,5 +83,5 @@ The program creates a `*_synced.srt` file so as to not mess with the original sr
 - Improved GUI scaling for different screen resolutions.
 - ~~Resume/progress system is finicky. WIP.~~ Fixed!
 - Making keyboard shortcuts more robust.
-- Make it easier to jump around the video file.
+- Make it easier to jump around the video file. -- ADDED!(testing in progress)
    - Clicking 'Next' a thousand times isn't fun... maybe a collapsible scrollable list on the side to see all the subtitles and double clicking takes you to that timestamp. 
