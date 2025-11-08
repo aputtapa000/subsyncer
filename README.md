@@ -19,7 +19,9 @@ The Subtitle Synchronizer is a Python-based GUI application designed to help use
 
 ## How to Run
 
-### Windows
+<details>
+<summary>Windows</summary>
+
 1. Install Python from [python.org](https://www.python.org/).
 2. Install VLC media player from [videolan.org](https://www.videolan.org/).
 3. Install the `python-vlc` library by running:
@@ -32,7 +34,11 @@ The Subtitle Synchronizer is a Python-based GUI application designed to help use
    python syncer.py
    ```
 
-### macOS
+</details>
+
+<details>
+<summary>macOS</summary>
+
 1. Install Python from [python.org](https://www.python.org/).
 2. Install VLC media player from [videolan.org](https://www.videolan.org/).
 3. Install the `python-vlc` library by running:
@@ -45,7 +51,11 @@ The Subtitle Synchronizer is a Python-based GUI application designed to help use
    python3 syncer.py
    ```
 
-### Linux
+</details>
+
+<details>
+<summary>Linux</summary>
+
 1. Install Python from your package manager or [python.org](https://www.python.org/).
 2. Install VLC media player from your package manager or [videolan.org](https://www.videolan.org/).
 3. Install the `python-vlc` library by running:
@@ -57,6 +67,8 @@ The Subtitle Synchronizer is a Python-based GUI application designed to help use
    ```
    python3 syncer.py
    ```
+
+</details>
 
 ## Keyboard Shortcuts
 - `Space`: Sync the current subtitle.
